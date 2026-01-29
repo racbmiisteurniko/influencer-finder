@@ -32,10 +32,12 @@ const LANGUAGES = [
 
 interface Props {
   onSearch: (filters: SearchFilters) => void;
+  onAutoSearch?: (filters: SearchFilters) => void;
   loading: boolean;
+  autoLoading?: boolean;
 }
 
-export default function SearchForm({ onSearch, loading }: Props) {
+export default function SearchForm({ onSearch, onAutoSearch, loading, autoLoading }: Props) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>({
     keywords: "",
@@ -323,39 +325,79 @@ export default function SearchForm({ onSearch, loading }: Props) {
         </div>
       )}
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-3 px-6 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg
-              className="animate-spin h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            Recherche en cours...
-          </span>
-        ) : (
-          "🔍 Rechercher des influenceurs"
+      {/* Submit Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <button
+          type="submit"
+          disabled={loading || autoLoading}
+          className="py-3 px-6 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Génération...
+            </span>
+          ) : (
+            "🔗 Générer des liens"
+          )}
+        </button>
+        {onAutoSearch && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onAutoSearch(filters);
+            }}
+            disabled={loading || autoLoading}
+            className="py-3 px-6 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {autoLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Scraping... (1-2 min)
+              </span>
+            ) : (
+              "🤖 Trouver automatiquement"
+            )}
+          </button>
         )}
-      </button>
+      </div>
     </form>
   );
 }
